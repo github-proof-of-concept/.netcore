@@ -1,0 +1,84 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "darapureddy12345-patch-1" ]
+
+ASP.netcore
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      
+    sonar   
+  build:
+    name: Build and analyze
+    need:[.net build,sonar]
+    runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v1
+      - name: Run build-wrapper
+        run: |
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }}<insert_your_clean_build_command>
+      - name: Run sonar-scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+          code quality check:
+    name: Check Sonar Report Quality
+    runs-on: ubuntu-latest
+    needs: [sonar quality report]
+    env:
+      CODE_SMELLS_THRESHOLD: "0"
+      VULNERABILITIES_THRESHOLD: "0"
+      BUGS_THRESHOLD: "0"
+    steps:
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      - name: Retrieve SonarCloud Metrics
+        id: retrieve_metrics
+        run: |
+          SONAR_RESPONSE=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+                          "https://sonarcloud.io/api/measures/component?component=Shara-org_sample-java-repo&metricKeys=code_smells,vulnerabilities,bugs")
+          echo "::set-output name=sonar_response::$SONAR_RESPONSE"
+      - name: Check Sonar Report
+        run: |
+          SONAR_RESPONSE='${{ steps.retrieve_metrics.outputs.sonar_response }}'
+          CODE_SMELLS=$(echo "$SONAR_RESPONSE" | jq -r '.component.measures[] | select(.metric == "code_smells") | .value')
+          VULNERABILITIES=$(echo "$SONAR_RESPONSE" | jq -r '.component.measures[] | select(.metric == "vulnerabilities") | .value')
+          BUGS=$(echo "$SONAR_RESPONSE" | jq -r '.component.measures[] | select(.metric == "bugs") | .value')
+          echo "CODE_SMELLS: $CODE_SMELLS"
+          echo "VULNERABILITIES: $VULNERABILITIES"
+          echo "BUGS: $BUGS"
+          if [[ $CODE_SMELLS -gt $CODE_SMELLS_THRESHOLD || $VULNERABILITIES -gt $VULNERABILITIES_THRESHOLD || $BUGS -gt $BUGS_THRESHOLD ]]; then
+          echo "Sonar report does not meet quality standards. Exiting with an error."
+          exit 1
+          else
+          echo "Sonar report meets quality standards."
+          fi
