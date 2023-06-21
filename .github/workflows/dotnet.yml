@@ -1,0 +1,47 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "darapureddy12345-patch-1" ]
+  pull_request:
+    branches: [ "darapureddy12345-patch-1" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    jobs:
+job: Build
+-displayName: Build
+
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET 6 Core sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
+        includePreviewVersions: true
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: 'build'
+        projects: |
+          $(workingDirectory)/*.csproj
+        arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
