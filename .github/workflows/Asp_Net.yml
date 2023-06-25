@@ -25,7 +25,7 @@ jobs:
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
-      ProjectPath: './DotnetTemplate/DotnetTemplate.csproj'
+      ProjectPath: './SampleWebApiAspNetCore/SampleWebApiAspNetCore.csproj'
       Configuration: 'Release'
       Solution: 'SampleWebApiAspNetCore.sln'
       ArtifactName: 'drop'
@@ -71,7 +71,7 @@ jobs:
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.Solution}}
+        run: dotnet publish -c Release -o ${{env.ProjectPath}}
         working-directory: ${{env.ROOT_PATH}}
 
       - name: Drop Artifact
