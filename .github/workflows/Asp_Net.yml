@@ -46,16 +46,17 @@ jobs:
         with:
           versionSpec: '5.x'
 
+      - name: Setup .NET 6.0 SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+          
+        
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.15
       #        with:
       #          updateAssemblyInfo: true
       #          updateAssemblyInfoFilename: 'WebApp/Properties/AssemblyInfo.cs'
-
-      - name: Setup .NET 6.0 SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0.x
 
       - name: NuGet Cache
         uses: actions/cache@v3
