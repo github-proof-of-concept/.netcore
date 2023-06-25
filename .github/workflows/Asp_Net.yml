@@ -71,7 +71,7 @@ jobs:
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
 
       - name: dotnet publish
-        run: dotnet publish ${{ env.ProjectPath }}
+        run: dotnet publish
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Drop Artifact
