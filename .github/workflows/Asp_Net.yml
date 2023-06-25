@@ -11,8 +11,6 @@ on:
       - master
       - develop
 
-  workflow_dispatch:
-
 jobs:
   build-test-drop-artifacts:
     name: Build Test & Drop artifacts
