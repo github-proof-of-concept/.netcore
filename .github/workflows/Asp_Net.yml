@@ -69,12 +69,12 @@ jobs:
       - name: Build Solution
         run: |
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
-        working-directory: ${{env.ROOT_PATH}}
+    
 
       - name: dotnet publish
         run: dotnet publish -c ${{ env.Configuration }} -o ${{ env.ArtifactPath }}
-        working-directory: ${{ env.ROOT_PATH }}
-
+    
+    
       - name: Drop Artifact
         uses: actions/upload-artifact@v3
         with:
