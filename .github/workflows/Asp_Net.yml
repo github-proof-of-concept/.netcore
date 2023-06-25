@@ -29,7 +29,7 @@ jobs:
       Configuration: 'Release'
       Solution: 'SampleWebApiAspNetCore.sln'
       ArtifactName: 'drop'
-      ArtifactPath: 'publish'
+      ArtifactPath: 'Publish'
       PathToTestCoverage: './DotnetTemplate.Tests/TestResults/coverage.info'
       ROOT_PATH: './actions'
       DOTNET_ROOT: './WebApp'
@@ -71,7 +71,7 @@ jobs:
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
 
       - name: dotnet publish
-        run: dotnet publish
+        run: dotnet publish -c SampleWebApiAspNetCore -o ${{ env.ArtifactPath }}
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Drop Artifact
