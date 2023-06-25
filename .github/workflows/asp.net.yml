@@ -1,4 +1,4 @@
-﻿name: Build Test & Drop artifacts
+﻿name: Dot.Net Build and Publish
 
 on:
   push:
