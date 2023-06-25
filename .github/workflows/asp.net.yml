@@ -32,6 +32,8 @@ jobs:
       ArtifactName: 'drop'
       ArtifactPath: 'publish'
       PathToTestCoverage: './DotnetTemplate.Tests/TestResults/coverage.info'
+      ROOT_PATH: './actions'
+      DOTNET_ROOT: './WebApp'
     
     steps:
       - name: Fetch Sources
@@ -68,10 +70,9 @@ jobs:
         run: |
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
 
-      - name: Run .NET Publish
-        run: |
-          dotnet publish ${{ env.ProjectPath }} --configuration ${{ env.Configuration }} --output ${{ env.ArtifactPath }}
-      #          dotnet publish "WebAppPath/WebAppProject.csproj" -r "linux-x64" -o "project-linux-build/src" --self-contained
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: ${{env.ROOT_PATH}}
 
       - name: Drop Artifact
         uses: actions/upload-artifact@v3
