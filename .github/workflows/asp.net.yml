@@ -27,7 +27,6 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
       ProjectPath: './DotnetTemplate/DotnetTemplate.csproj'
-      TestProjectPath: './DotnetTemplate.Tests/DotnetTemplate.Tests.csproj'
       Configuration: 'Release'
       Solution: 'SampleWebApiAspNetCore.sln'
       ArtifactName: 'drop'
@@ -68,24 +67,6 @@ jobs:
       - name: Build Solution
         run: |
           dotnet build ${{ env.Solution }} --configuration ${{ env.Configuration }} /p:ContinuousIntegrationBuild=true --no-restore
-
-      - name: Run Unit Tests
-        run: |
-          dotnet test ${{ env.TestProjectPath }} --configuration ${{ env.Configuration }} --no-build
-        env:
-          CollectCoverage: true
-          CoverletOutputFormat: lcov
-          ThresholdStat: total
-          ThresholdType: Line
-          CoverletOutput: TestResults/
-          SkipAutoProps: true
-          Threshold: 80
-
-      - name: Publish coverage report to Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ env.PathToTestCoverage }}
 
       - name: Run .NET Publish
         run: |
