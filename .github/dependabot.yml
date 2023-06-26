@@ -6,6 +6,6 @@
 version: 2
 updates:
   - package-ecosystem: "NuGet"
-    directory: "/"
+    directory: "/app"
     schedule:
       interval: "weekly"
