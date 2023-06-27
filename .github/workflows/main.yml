@@ -1,4 +1,4 @@
-name: "java_app_pipeline"
+name: "Asp.net"
 
 on:
   push:
