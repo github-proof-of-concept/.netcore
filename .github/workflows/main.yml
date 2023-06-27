@@ -1,0 +1,51 @@
+name: "java_app_pipeline"
+
+on:
+  push:
+   #branches: [ main, develop, darapureddy12345-patch-6, hotfix, release ]
+
+jobs:
+  Codebuild:
+    name: Codebuild
+    uses: "./.github/workflows/Asp.Net.yml"
+    with:
+       runnerName: "ubuntu-latest"
+       Asp.Net-version: "6.0.x"
+       distribution: "temurin"
+       cache: "nuget" 
+    
+  CodeScanning:
+     name: Test - SonarCloud Scan
+     uses: "./.github/workflows/sonarcloud.yml"
+     needs: [ Codebuild ]
+     secrets:
+     
+      GITTOKEN: "${{ secrets.GITTOKEN }}"
+      SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+     
+     with:
+       Asp.Net-version : "6.0.x"
+       runnerName: "ubuntu-latest"
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: 'darapureddy12345-patch-6'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+  
+ 
+          
