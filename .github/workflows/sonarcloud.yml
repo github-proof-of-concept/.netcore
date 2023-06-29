@@ -29,10 +29,10 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "darapureddy12345-patch-6", "master" ]
+    branches: [ "darapureddy12345-patch-6" ]
   pull_request:
     branches: [ "darapureddy12345-patch-6" ]
- 
+
 jobs:
   build:
     name: Build and analyze
@@ -71,6 +71,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"github-proof-of-concept_.netcore" /o:"github-proof-of-concept" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"github-proof-of-concept_github-poc" /o:"github-proof-of-concept" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
