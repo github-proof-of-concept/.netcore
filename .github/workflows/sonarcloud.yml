@@ -33,7 +33,7 @@ on:
     branches: [ "darapureddy12345-patch-6", "master" ]
   pull_request:
     branches: [ "darapureddy12345-patch-6" ]
-  workflow_dispatch:
+ 
 
 jobs:
   build:
