@@ -1,7 +1,9 @@
 name: 'Terraform'
 
 on:
-  workflow_call:
+ push:
+    branches: [ "darapureddy12345-patch-6" ]
+ workflow_call:
    secrets:
     TF_API_TOKEN:
         required: true
@@ -56,5 +58,5 @@ jobs:
 
     # apply command 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/"feature"' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/"darapureddy12345-patch-6"' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
