@@ -8,17 +8,10 @@ on:
     TF_API_TOKEN:
         required: true
     
-   inputs:
-      
-      runnerName:
-        required: true
-        default: "ubuntu-latest"
-        type: string
-
 jobs:
   terraform:
     name: 'Terraform'
-    runs-on: ${{inputs.runnerName}}
+    runs-on: ubuntu-latest
     
     steps:
     # Checkout the repository to the GitHub Actions runner
