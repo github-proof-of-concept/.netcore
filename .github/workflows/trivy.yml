@@ -7,14 +7,11 @@ name: build
 
 on:
   push:
-    branches: [ "darapureddy12345-patch-6", "master" ]
+    branches: [ "darapureddy12345-patch-6", ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "darapureddy12345-patch-6" ]
-  schedule:
-    - cron: '32 23 * * 5'
-
-
+    
 permissions:
   contents: read
 
