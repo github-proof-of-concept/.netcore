@@ -1,0 +1,39 @@
+name: veeracode CI
+
+on:
+  push:
+    branches: [ "darapureddy12345-patch-6" ]
+  pull_request:
+    branches: [ "darapureddy12345-patch-6" ]
+    
+jobs:
+  veracode_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x' # Adjust the version as per your project
+
+      - name: Build and Test
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+          dotnet test --configuration Release
+
+      - name: Install Veracode uploadandscan tool
+        run: dotnet tool install --global Veracode.UploadAndScan
+
+      - name: Upload and Scan
+        run: |
+          veracode-uploadandscan \
+            --appname "Your Veracode Application Name" \
+            --createprofile \
+            --version "1.0.0" \
+            --filepath "./path/to/your/application.zip" \
+            --id "your-api-id" \
+            --key "your-api-key"
